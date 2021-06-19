@@ -1,32 +1,112 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <!-- height="100vh" -->
+  <v-app>
+    <!-- menu -->
+    <v-layout row>
+      <v-flex md12>
+        <v-card class="mt-3">
+          <TopMenu @drawer="drawerFn" />
+        </v-card>
+      </v-flex>
+    </v-layout>
+    <!-- carousel -->
+    <v-layout row>
+      <v-flex md12>
+        <router-view></router-view>
+        <!-- <Carousel /> -->
+      </v-flex>
+    </v-layout>
+    <!-- drawer -->
+    <v-navigation-drawer v-model="drawer" absolute temporary height="100vh">
+      <v-list>
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-title>Home</v-list-item-title>
+        </v-list-item>
+
+        <v-list-group :value="true" prepend-icon="mdi-account-circle">
+          <template v-slot:activator>
+            <v-list-item-title>Users</v-list-item-title>
+          </template>
+
+          <v-list-group :value="true" no-action sub-group>
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Admin</v-list-item-title>
+              </v-list-item-content>
+            </template>
+
+            <v-list-item v-for="([title, icon], i) in admins" :key="i" link>
+              <v-list-item-title v-text="title"></v-list-item-title>
+
+              <v-list-item-icon>
+                <v-icon v-text="icon"></v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
+
+          <v-list-group no-action sub-group>
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Actions</v-list-item-title>
+              </v-list-item-content>
+            </template>
+
+            <v-list-item v-for="([title, icon], i) in cruds" :key="i" link>
+              <v-list-item-title v-text="title"></v-list-item-title>
+
+              <v-list-item-icon>
+                <v-icon v-text="icon"></v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
+        </v-list-group>
+      </v-list>
+    </v-navigation-drawer>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+<script>
+// import Carousel from "./components/Carousel.vue";
+import TopMenu from "./components/TopMenu.vue";
+import { mapGetters } from "vuex";
+export default {
+  name: "App",
+  components: {
+    // Carousel,
+    TopMenu,
+  },
+  methods: {
+    drawerFn() {
+      this.drawer = true;
+    },
+  },
+  computed: {
+    ...mapGetters(["shopData"]),
+  },
+  data: () => ({
+    //
+    drawer: false,
+    group: null,
+    items: [
+      { title: "Click Me" },
+      { title: "Click Me" },
+      { title: "Click Me" },
+      { title: "Click Me 2" },
+    ],
+         admins: [
+        ["Management", "mdi-account-multiple-outline"],
+        ["Settings", "mdi-cog-outline"],
+      ],
+      cruds: [
+        ["Create", "mdi-plus-outline"],
+        ["Read", "mdi-file-outline"],
+        ["Update", "mdi-update"],
+        ["Delete", "mdi-delete"],
+      ],
+  }),
+};
+</script>
